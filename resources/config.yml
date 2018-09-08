@@ -1,0 +1,5 @@
+listening_addr: ":1337"
+# Syntax: "user:password@tcp(host:port)/databaseName")
+db_connection_string: "root:root@/pottpokal"
+# Loglevel 0 - TRACE, 1 - DEBUG, 2 - INFO
+log_level: 2
