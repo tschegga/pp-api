@@ -1,12 +1,13 @@
 package controller
 
 import (
-	"github.com/gorilla/mux"
-	"fmt"
-	"net/http"
-	"log"
 	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 func HandleRequests(r *mux.Router) {
@@ -14,7 +15,7 @@ func HandleRequests(r *mux.Router) {
 	// Define all api endpoints here
 	r.HandleFunc("/", statusHandler)
 	r.HandleFunc("/v1/ranking", rankingHandler)
-	r.HandleFunc("/v1/session", sessionHandler)
+	r.HandleFunc("/v1/sessions", sessionsHandler)
 }
 
 func statusHandler(w http.ResponseWriter, r *http.Request) {
@@ -49,11 +50,11 @@ func rankingHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func sessionHandler(w http.ResponseWriter, r *http.Request) {
+func sessionsHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 
 	case "GET":
-		log.Println("GET session")
+		log.Println("GET sessions")
 
 		// Parse the URL parameter
 		q := r.URL.Query()

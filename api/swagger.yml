@@ -1,0 +1,98 @@
+openapi: 3.0.0
+info:
+  title: CoH-Pottpokal API
+  description: Specification for the API for the CoH-Pottpokal project.
+  version: 1.0.0
+
+paths:
+  /v1/ranking:
+    get:
+      tags:
+        - ranking
+      summary: Returns the current ranking.
+      responses:
+        '200':
+          description: A JSON array of usernames and their session count
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserInRanking"
+  /v1/sessions:
+    get:
+      tags:
+        - sessions
+      summary: Return all sessions for a given userid
+      responses:
+        '200':
+          description: A JSON array containing all sessions.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Session"
+        '404':
+          description: User was not found
+    parameters:
+      - name: userid
+        in: path
+        description: UserID of session user
+        schema:
+          type: "string"
+  /v1/users:
+    get:
+      tags:
+        - users
+      summary: Returns the user object for a given user and correct password.
+      responses:
+        '200':
+          description: A JSON object that contains all user data.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '401':
+          description: Given password was not correct.
+        '404':
+          description: User with userid was not found.
+    parameters:
+      - name: userid
+        in: header
+        description: UserID of the user
+        schema:
+          type: "integer"
+      - name: password
+        in: header
+        description: An MD5 hash of the password of the user.
+        schema:
+          type: "string"
+
+components:
+  schemas:
+    User:
+      type: "object"
+      properties:
+        userid:
+          type: "integer"
+        username:
+          type: "string"
+        rank:
+          type: "integer"
+    UserInRanking:
+      type: "object"
+      properties:
+        username:
+          type: "string"
+        sessioncount:
+          type: "integer"
+    Session:
+      type: "object"
+      properties:
+        start:
+          type: "string"
+        length:
+          type: "integer"
+        quality:
+          type: "integer"
