@@ -37,7 +37,7 @@ paths:
           description: User was not found
     parameters:
       - name: userid
-        in: path
+        in: query
         description: UserID of session user
         schema:
           type: "string"
