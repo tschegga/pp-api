@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"pp-api/data"
 	"strconv"
 
 	"github.com/gorilla/mux"
@@ -16,10 +17,25 @@ func HandleRequests(r *mux.Router) {
 	r.HandleFunc("/", statusHandler)
 	r.HandleFunc("/v1/ranking", rankingHandler)
 	r.HandleFunc("/v1/sessions", sessionsHandler)
+	r.HandleFunc("/v1/users", usersHandler)
 }
 
 func statusHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("GET status")
+	switch r.Method {
+	case "GET":
+		fmt.Println("GET status")
+
+		// Return status
+		jsonResponse, jsonError := json.Marshal(data.Status{"pp-api", "0.1.0"})
+		if jsonError != nil {
+			log.Println(jsonError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(jsonResponse)
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
 }
 
 func rankingHandler(w http.ResponseWriter, r *http.Request) {
@@ -92,5 +108,14 @@ func sessionsHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("DELETE session")
 	default:
 		log.Println("Method not allowed, only methods GET, PUT, DELETE allowed")
+	}
+}
+
+func usersHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		log.Println("GET users")
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
 }
