@@ -222,6 +222,20 @@ func usersHandler(w http.ResponseWriter, r *http.Request) {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(jsonResponse)
+	case "DELETE":
+		log.Println("DELETE users")
+
+		// Check if http headers for username is set
+		if r.Header.Get("username") == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			log.Println("Header 'username' is not set")
+			return
+		}
+		username := r.Header.Get("username")
+
+		// Delete user
+		deleteUserAndSessions(username)
+		w.WriteHeader(http.StatusOK)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}

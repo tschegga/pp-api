@@ -100,3 +100,27 @@ func addUser(username string, password string) error {
 
 	return nil
 }
+
+func deleteUserAndSessions(username string) error {
+	db := GetConnection()
+
+	rTx := db.MustBegin()
+
+	// Delete all sessions connected to the user
+	query := "DELETE FROM `sessions` WHERE user = (SELECT idusers FROM users WHERE name = ?)"
+	_, userError := db.Exec(query, username)
+	if userError != nil {
+		return userError
+	}
+
+	// Delete user from users table
+	query = "DELETE FROM `users` WHERE name = ?"
+	_, userError = db.Exec(query, username)
+	if userError != nil {
+		return userError
+	}
+
+	rTx.Commit()
+
+	return nil
+}

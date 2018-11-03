@@ -57,17 +57,17 @@ paths:
           description: Given password was not correct.
         '404':
           description: User with userid was not found.
-    parameters:
-      - name: userid
-        in: header
-        description: UserID of the user
-        schema:
-          type: "integer"
-      - name: password
-        in: header
-        description: An MD5 hash of the password of the user.
-        schema:
-          type: "string"
+      parameters:
+        - name: username
+          in: header
+          description: Name of the user
+          schema:
+            type: "string"
+        - name: password
+          in: header
+          description: An MD5 hash of the password of the user.
+          schema:
+            type: "string"
     put:
       tags:
         - users
@@ -79,6 +79,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
+      parameters:
+        - name: username
+          in: header
+          description: Name of the user
+          schema:
+            type: "string"
+        - name: password
+          in: header
+          description: An MD5 hash of the password of the user.
+          schema:
+            type: "string"
+    delete:
+      tags:
+        - users
+      summary: Deletes a user and all of his sessions.
+      responses:
+        '200':
+          description: User and his sessions were successfully deleted.
+      parameters:
+        - name: username
+          in: header
+          description: Name of the user
+          schema:
+            type: "string"
 
 components:
   schemas:
