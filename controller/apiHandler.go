@@ -181,6 +181,47 @@ func usersHandler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusForbidden)
 		}
 
+	case "PUT":
+		log.Println("PUT users")
+
+		// Check if http headers for username and password are set
+		if r.Header.Get("username") == "" || r.Header.Get("password") == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			log.Println("Headers 'username' or 'password' not set")
+			return
+		}
+
+		username := r.Header.Get("username")
+		password := r.Header.Get("password")
+
+		// Create user in database
+		usersErr := addUser(username, password)
+		if usersErr != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Println(usersErr)
+			return
+		}
+
+		// Get newly created user object
+		user, getUserErr := getUser(username)
+		if getUserErr != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Println(getUserErr)
+			return
+		}
+		user.Rank = 0
+		user.Sessions = make([]data.Session, 0)
+
+		// parse user object
+		jsonResponse, jsonErr := json.Marshal(user)
+		if jsonErr != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Println(jsonErr)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(jsonResponse)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}

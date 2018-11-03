@@ -68,6 +68,17 @@ paths:
         description: An MD5 hash of the password of the user.
         schema:
           type: "string"
+    put:
+      tags:
+        - users
+      summary: Creates a new user in the database and returns newly created user.
+      responses:
+        '200':
+          description: A JSON object that contains username, userid, rank, sessions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
 
 components:
   schemas:

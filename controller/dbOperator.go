@@ -83,3 +83,20 @@ func getUser(username string) (data.User, error) {
 
 	return user, nil
 }
+
+func addUser(username string, password string) error {
+	db := GetConnection()
+
+	rTx := db.MustBegin()
+
+	query := "INSERT INTO `users`(`name`, `password`) VALUES (?, ?)"
+
+	_, userError := db.Exec(query, username, password)
+	if userError != nil {
+		return userError
+	}
+
+	rTx.Commit()
+
+	return nil
+}
