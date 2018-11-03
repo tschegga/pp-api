@@ -5,7 +5,6 @@ import (
 )
 
 func getRanking() ([]data.Rank, error) {
-
 	db := GetConnection()
 
 	rTx := db.MustBegin()
@@ -27,7 +26,6 @@ func getRanking() ([]data.Rank, error) {
 }
 
 func getSessions(user int) ([]data.Session, error) {
-
 	db := GetConnection()
 
 	sTx := db.MustBegin()
@@ -44,4 +42,44 @@ func getSessions(user int) ([]data.Session, error) {
 	sTx.Commit()
 
 	return sessions, nil
+}
+
+func isUserValid(username string, password string) (bool, error) {
+	db := GetConnection()
+
+	rTx := db.MustBegin()
+
+	query := "SELECT idusers,name FROM users WHERE name = ? AND password = ?"
+
+	user := data.User{}
+
+	userError := db.Get(&user, query, username, password)
+	if userError != nil {
+		// TODO: check on sql error empty result set
+		return false, userError
+	}
+
+	rTx.Commit()
+
+	// if user or password is not correct function will terminate above
+	return true, nil
+}
+
+func getUser(username string) (data.User, error) {
+	db := GetConnection()
+
+	rTx := db.MustBegin()
+
+	query := "SELECT idusers,name FROM users WHERE name = ?"
+
+	user := data.User{}
+
+	userError := db.Get(&user, query, username)
+	if userError != nil {
+		return user, userError
+	}
+
+	rTx.Commit()
+
+	return user, nil
 }
