@@ -142,6 +142,30 @@ func usersHandler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
+			// Calculate current rank of user
+			ranking, rankingErr := getRanking()
+			if rankingErr != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				log.Println(rankingErr)
+				return
+			}
+			for index, element := range ranking {
+				if element.Name == user.Username {
+					user.Rank = index + 1
+				}
+			}
+
+			// Get sessions for user
+			var userSessions []data.Session
+			var sessionsErr error
+			userSessions, sessionsErr = getSessions(user.UserID)
+			if sessionsErr != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				log.Println(sessionsErr)
+				return
+			}
+			user.Sessions = userSessions
+
 			// parse user object
 			jsonResponse, jsonErr := json.Marshal(user)
 			if jsonErr != nil {

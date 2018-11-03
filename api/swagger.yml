@@ -80,6 +80,10 @@ components:
           type: "string"
         rank:
           type: "integer"
+        sessions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Session'
     UserInRanking:
       type: "object"
       properties:
