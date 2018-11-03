@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// HandleRequests provides all api endpoints on one place
 func HandleRequests(r *mux.Router) {
 
 	// Define all api endpoints here
@@ -26,7 +27,7 @@ func statusHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("GET status")
 
 		// Return status
-		jsonResponse, jsonError := json.Marshal(data.Status{"pp-api", "0.1.0"})
+		jsonResponse, jsonError := json.Marshal(data.Status{Name: "pp-api", Version: "0.1.0"})
 		if jsonError != nil {
 			log.Println(jsonError)
 			return
@@ -74,19 +75,19 @@ func sessionsHandler(w http.ResponseWriter, r *http.Request) {
 
 		// Parse the URL parameter
 		q := r.URL.Query()
-		userIdString := q.Get("userid")
-		if userIdString == "" {
+		userIDString := q.Get("userid")
+		if userIDString == "" {
 			log.Println("No user was given as parameter")
 			return
 		}
-		userId, intErr := strconv.Atoi(userIdString)
+		userID, intErr := strconv.Atoi(userIDString)
 		if intErr != nil {
 			log.Printf("Error parsing string to int:%s", intErr)
 			return
 		}
 
 		// Request the database
-		result, err := getSessions(userId)
+		result, err := getSessions(userID)
 		if err != nil {
 			log.Println(err)
 			return
