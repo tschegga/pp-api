@@ -35,12 +35,38 @@ paths:
                   $ref: "#/components/schemas/Session"
         '404':
           description: User was not found
-    parameters:
-      - name: userid
-        in: query
-        description: UserID of session user
-        schema:
-          type: "string"
+      parameters:
+        - name: userid
+          in: query
+          description: UserID of session user
+          schema:
+            type: "string"
+    put:
+      tags:
+        - sessions
+      summary: Create new session in database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Session"            
+      responses:
+        '200':
+          description: Creation was successful.
+    delete:
+      tags:
+        - sessions
+      summary: Deletes given session with given sessionID
+      responses:
+        '200':
+          description: Deletion was successful.
+      parameters:
+        - name: sessionid
+          in: query
+          description: sessionID of session
+          schema:
+            type: "string"
   /v1/users:
     get:
       tags:

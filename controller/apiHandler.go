@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"pp-api/data"
@@ -86,6 +87,7 @@ func sessionsHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		// TODO: Also return sessionID
 		// Request the database
 		result, err := getSessions(userID)
 		if err != nil {
@@ -105,10 +107,64 @@ func sessionsHandler(w http.ResponseWriter, r *http.Request) {
 
 	case "PUT":
 		log.Println("PUT session")
+
+		// Read body
+		body, readErr := ioutil.ReadAll(r.Body)
+		defer r.Body.Close()
+		if readErr != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Println(readErr)
+			return
+		}
+
+		// Unmarshal
+		var session data.AddSession
+		marshallErr := json.Unmarshal(body, &session)
+		if marshallErr != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Println(marshallErr)
+			return
+		}
+
+		addSessionErr := addSession(session.UserID, session.Start, session.Length, session.Quality)
+		if addSessionErr != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Println(addSessionErr)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
 	case "DELETE":
 		log.Println("DELETE session")
+
+		// Parse the URL parameter
+		q := r.URL.Query()
+		sessionIDString := q.Get("sessionid")
+		if sessionIDString == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			log.Println("No session was given as parameter")
+			return
+		}
+
+		// Convert URL parameter to int
+		sessionID, intErr := strconv.Atoi(sessionIDString)
+		if intErr != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("Error parsing string to int:%s", intErr)
+			return
+		}
+
+		// Delete session
+		deleteSessionErr := deleteSession(sessionID)
+		if deleteSessionErr != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Println(deleteSessionErr)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
 	default:
-		log.Println("Method not allowed, only methods GET, PUT, DELETE allowed")
+		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
 }
 

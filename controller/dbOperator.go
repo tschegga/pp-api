@@ -44,6 +44,40 @@ func getSessions(user int) ([]data.Session, error) {
 	return sessions, nil
 }
 
+func addSession(userID int, start string, length int, quality int) error {
+	db := GetConnection()
+
+	rTx := db.MustBegin()
+
+	query := "INSERT INTO `sessions`(`user`, `start`, `length`, `quality`) VALUES (?, ?, ?, ?)"
+
+	_, sessionErr := db.Exec(query, userID, start, length, quality)
+	if sessionErr != nil {
+		return sessionErr
+	}
+
+	rTx.Commit()
+
+	return nil
+}
+
+func deleteSession(sessionID int) error {
+	db := GetConnection()
+
+	rTx := db.MustBegin()
+
+	// Delete all sessions connected to the user
+	query := "DELETE FROM `sessions` WHERE idsessions = ?"
+	_, userError := db.Exec(query, sessionID)
+	if userError != nil {
+		return userError
+	}
+
+	rTx.Commit()
+
+	return nil
+}
+
 func isUserValid(username string, password string) (bool, error) {
 	db := GetConnection()
 
