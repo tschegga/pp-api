@@ -87,7 +87,6 @@ func sessionsHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// TODO: Also return sessionID
 		// Request the database
 		result, err := getSessions(userID)
 		if err != nil {
