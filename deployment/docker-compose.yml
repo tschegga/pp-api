@@ -1,0 +1,20 @@
+version: '3'
+services:
+  db:
+    image: "mariadb"
+    environment:
+      - MYSQL_DATABASE=pottpokal
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - /db:/var/lib/mysql
+    ports:
+      - "3306:3306"
+  phpmyadmin:
+    image: "phpmyadmin/phpmyadmin"
+    environment:
+      PMA_HOST: "db"
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "8090:80"
+    links:
+      - "db:db"
