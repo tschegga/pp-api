@@ -1,15 +1,16 @@
 package main
 
 import (
-	"github.com/gorilla/mux"
-	"pp-api/controller"
+	"log"
 	"net/http"
 	"pp-api/config"
+	"pp-api/controller"
+
+	"github.com/gorilla/mux"
 	"github.com/rs/cors"
-	"log"
 )
 
-const configFile = "resources/config.yml"
+const configFile = "../resources/config.yml"
 
 func main() {
 
