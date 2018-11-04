@@ -30,7 +30,7 @@ func getSessions(user int) ([]data.Session, error) {
 
 	sTx := db.MustBegin()
 
-	query := "SELECT start, length, quality FROM sessions WHERE user = ?"
+	query := "SELECT idsessions, start, length, quality FROM sessions WHERE user = ?"
 
 	sessions := []data.Session{}
 
