@@ -9,14 +9,14 @@
 ## Running the application
 
 First move to the /bin folder. It will not exist if you clone the repository for the first time. In this case you need to create it. Then you can run the application with:
-```bash
+```golang
 go run ../main.go
 ```
 
 ## Building the application
 
 You can also build the application before running it. Similarly to above, navigate to the /bin folder and run:
-```bash
+```golang
 go build ../main.go
 ./main
 ```
