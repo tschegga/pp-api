@@ -1,0 +1,291 @@
+{
+	"info": {
+		"_postman_id": "3857f7c1-4a9b-4007-a8ce-d42b1ab8d330",
+		"name": "pp-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:1337/",
+					"host": [
+						"localhost"
+					],
+					"port": "1337",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/v1/users GET",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "username",
+						"value": "Silvan",
+						"type": "text"
+					},
+					{
+						"key": "password",
+						"value": "7453679f023fec6d1236ea9aa8676aca",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:1337/v1/users",
+					"host": [
+						"localhost"
+					],
+					"port": "1337",
+					"path": [
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/v1/users PUT",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "username",
+						"value": "test",
+						"type": "text"
+					},
+					{
+						"key": "password",
+						"value": "7453679f023fec6d1236ea9aa8676aca",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:1337/v1/users",
+					"host": [
+						"localhost"
+					],
+					"port": "1337",
+					"path": [
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/v1/users DELETE",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "username",
+						"value": "Silvan",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:1337/v1/users",
+					"host": [
+						"localhost"
+					],
+					"port": "1337",
+					"path": [
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/v1/sessions GET",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "username",
+						"type": "text",
+						"value": "Silvan"
+					},
+					{
+						"key": "password",
+						"type": "text",
+						"value": "7453679f023fec6d1236ea9aa8676aca"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:1337/v1/sessions?userid=1",
+					"host": [
+						"localhost"
+					],
+					"port": "1337",
+					"path": [
+						"v1",
+						"sessions"
+					],
+					"query": [
+						{
+							"key": "userid",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/v1/sessions PUT",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "username",
+						"type": "text",
+						"value": "Silvan"
+					},
+					{
+						"key": "password",
+						"type": "text",
+						"value": "7453679f023fec6d1236ea9aa8676aca"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"userid\": 1,\n\t\"start\": \"2018-08-19 00:00:00\",\n\t\"length\": 10,\n\t\"quality\": 1\n}"
+				},
+				"url": {
+					"raw": "localhost:1337/v1/sessions",
+					"host": [
+						"localhost"
+					],
+					"port": "1337",
+					"path": [
+						"v1",
+						"sessions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/v1/sessions DELETE",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "username",
+						"type": "text",
+						"value": "Silvan"
+					},
+					{
+						"key": "password",
+						"type": "text",
+						"value": "7453679f023fec6d1236ea9aa8676aca"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"userid\": 1,\n\t\"start\": \"2018-08-19 00:00:00\",\n\t\"length\": 10,\n\t\"quality\": 1\n}"
+				},
+				"url": {
+					"raw": "localhost:1337/v1/sessions?sessionid=26",
+					"host": [
+						"localhost"
+					],
+					"port": "1337",
+					"path": [
+						"v1",
+						"sessions"
+					],
+					"query": [
+						{
+							"key": "sessionid",
+							"value": "26"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "test",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "test",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "d6f451ba-a427-4aab-8b44-506512397f06",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "256385c2-482e-4db1-b827-0358611bb37e",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
