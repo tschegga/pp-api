@@ -16,10 +16,10 @@ import (
 func HandleRequests(r *mux.Router) {
 
 	// Define all api endpoints here
-	r.HandleFunc("/", statusHandler)
-	r.HandleFunc("/v1/ranking", rankingHandler)
-	r.HandleFunc("/v1/sessions", sessionsHandler)
-	r.HandleFunc("/v1/users", usersHandler)
+	r.HandleFunc("/", validateBasicAuth(statusHandler))
+	r.HandleFunc("/v1/ranking", validateBasicAuth(rankingHandler))
+	r.HandleFunc("/v1/sessions", validateBasicAuth(sessionsHandler))
+	r.HandleFunc("/v1/users", validateBasicAuth(usersHandler))
 }
 
 func statusHandler(w http.ResponseWriter, r *http.Request) {
