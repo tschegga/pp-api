@@ -31,7 +31,7 @@ func validateBasicAuth(pass handler) handler {
 	}
 }
 
-// TODO: implement with database
+// TODO: Obviously needs to be implemented with real users
 // Checks if the given username and password belong to an existing user.
 func validateUser(username, password string) bool {
 	if username == "test" && password == "test" {

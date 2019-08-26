@@ -10,6 +10,8 @@ paths:
       tags:
         - ranking
       summary: Returns the current ranking.
+      security:
+        - basicAuth: []
       responses:
         '200':
           description: A JSON array of usernames and their session count
@@ -19,11 +21,16 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/UserInRanking"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
   /v1/sessions:
     get:
       tags:
         - sessions
       summary: Return all sessions for a given userid
+      security:
+        - basicAuth: []
       responses:
         '200':
           description: A JSON array containing all sessions.
@@ -33,6 +40,8 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Session"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
         '404':
           description: User was not found
       parameters:
@@ -45,6 +54,8 @@ paths:
       tags:
         - sessions
       summary: Create new session in database
+      security:
+        - basicAuth: []
       requestBody:
         required: true
         content:
@@ -54,13 +65,19 @@ paths:
       responses:
         '200':
           description: Creation was successful.
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
     delete:
       tags:
         - sessions
       summary: Deletes given session with given sessionID
+      security:
+        - basicAuth: []
       responses:
         '200':
           description: Deletion was successful.
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
       parameters:
         - name: sessionid
           in: query
@@ -72,6 +89,8 @@ paths:
       tags:
         - users
       summary: Returns the user object for a given user and correct password.
+      security:
+        - basicAuth: []
       responses:
         '200':
           description: A JSON object that contains all user data.
@@ -80,7 +99,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/User"
         '401':
-          description: Given password was not correct.
+          $ref: '#/components/responses/UnauthorizedError'
         '404':
           description: User with userid was not found.
       parameters:
@@ -98,6 +117,8 @@ paths:
       tags:
         - users
       summary: Creates a new user in the database and returns newly created user.
+      security:
+        - basicAuth: []
       responses:
         '200':
           description: A JSON object that contains username, userid, rank, sessions
@@ -105,6 +126,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
       parameters:
         - name: username
           in: header
@@ -120,9 +143,13 @@ paths:
       tags:
         - users
       summary: Deletes a user and all of his sessions.
+      security:
+        - basicAuth: []
       responses:
         '200':
           description: User and his sessions were successfully deleted.
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
       parameters:
         - name: username
           in: header
@@ -131,6 +158,10 @@ paths:
             type: "string"
 
 components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
   schemas:
     User:
       type: "object"
@@ -172,3 +203,13 @@ components:
           type: "integer"
         quality:
           type: "integer"
+  responses:
+    UnauthorizedError:
+      description: Authentication information is missing or invalid
+      headers:
+        WWW_Authenticate:
+          schema:
+            type: string
+
+security:
+  - basicAuth: []
