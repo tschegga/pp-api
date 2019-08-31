@@ -1,6 +1,6 @@
-INSERT INTO users(name, password) VALUES ('Silvan', '7453679f023fec6d1236ea9aa8676aca');
-INSERT INTO users(name, password) VALUES ('Addy', '7453679f023fec6d1236ea9aa8676aca');
-INSERT INTO users(name, password) VALUES ('Lari', '7453679f023fec6d1236ea9aa8676aca');
+INSERT INTO users(name, password, role) VALUES ('Silvan', '7453679f023fec6d1236ea9aa8676aca', 0);
+INSERT INTO users(name, password, role) VALUES ('Addy', '7453679f023fec6d1236ea9aa8676aca', 1);
+INSERT INTO users(name, password, role) VALUES ('Lari', '7453679f023fec6d1236ea9aa8676aca', 1);
 
 INSERT INTO sessions(user, start, length, quality) VALUES (1, '2018-08-18 00:00:00', 10, 1);
 INSERT INTO sessions(user, start, length, quality) VALUES (1, '2018-08-18 00:00:00', 10, 1);
