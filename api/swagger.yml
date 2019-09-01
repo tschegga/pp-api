@@ -84,11 +84,12 @@ paths:
           description: sessionID of session
           schema:
             type: "string"
-  /v1/users:
+  
+  /v1/users/{username}:
     get:
       tags:
         - users
-      summary: Returns the user object for a given user and correct password.
+      summary: Returns the user object for a given username.
       security:
         - basicAuth: []
       responses:
@@ -101,42 +102,11 @@ paths:
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '404':
-          description: User with userid was not found.
+          $ref: '#/components/responses/UserNotFound'
       parameters:
         - name: username
-          in: header
-          description: Name of the user
-          schema:
-            type: "string"
-        - name: password
-          in: header
-          description: An MD5 hash of the password of the user.
-          schema:
-            type: "string"
-    put:
-      tags:
-        - users
-      summary: Creates a new user in the database and returns newly created user.
-      security:
-        - basicAuth: []
-      responses:
-        '200':
-          description: A JSON object that contains username, userid, rank, sessions
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/User"
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-      parameters:
-        - name: username
-          in: header
-          description: Name of the user
-          schema:
-            type: "string"
-        - name: password
-          in: header
-          description: An MD5 hash of the password of the user.
+          in: path
+          description: login name of the user
           schema:
             type: "string"
     delete:
@@ -150,12 +120,48 @@ paths:
           description: User and his sessions were successfully deleted.
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/UserNotFound'
+
       parameters:
         - name: username
           in: header
           description: Name of the user
           schema:
             type: "string"
+  /v1/users:
+    post:
+      tags:
+        - users
+      summary: Creates a new user with given username and password
+      security:
+        - basicAuth: []
+      responses:
+        '200':
+          description: A JSON object that contains username, userid, rank, sessions
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: user successfully created
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '409':
+          description: User with username already exists
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: user already exists
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddUser"
+
 
 components:
   securitySchemes:
@@ -203,6 +209,13 @@ components:
           type: "integer"
         quality:
           type: "integer"
+    AddUser:
+      type: "object"
+      properties:
+        username:
+          type: "string"
+        password:
+          type: "string"
   responses:
     UnauthorizedError:
       description: Authentication information is missing or invalid
@@ -210,6 +223,11 @@ components:
         WWW_Authenticate:
           schema:
             type: string
+    UserNotFound:
+      description: User was not found
+    BadRequest:
+      description: Request was malformed
+  
 
 security:
   - basicAuth: []

@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -20,6 +21,7 @@ func HandleRequests(r *mux.Router) {
 	r.HandleFunc("/v1/ranking", validateBasicAuth(rankingHandler))
 	r.HandleFunc("/v1/sessions", validateBasicAuth(sessionsHandler))
 	r.HandleFunc("/v1/users", validateBasicAuth(usersHandler))
+	r.HandleFunc("/v1/users/{username}", validateBasicAuth(usersParameterHandler))
 }
 
 func statusHandler(w http.ResponseWriter, r *http.Request) {
@@ -169,26 +171,76 @@ func sessionsHandler(w http.ResponseWriter, r *http.Request) {
 
 func usersHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
+	case "POST":
+		log.Println("POST users")
+
+		//
+		// Check if user already exists
+		//
+
+		// Read body
+		body, readErr := ioutil.ReadAll(r.Body)
+		defer r.Body.Close()
+		if readErr != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Println(readErr)
+			return
+		}
+
+		// Unmarshal
+		var user struct {
+			Name     string `json:"username"`
+			Password string `json:"password"`
+		}
+		marshallErr := json.Unmarshal(body, &user)
+		if marshallErr != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			log.Println(marshallErr)
+			return
+		}
+
+		// Check in database
+		userExists, userExistsErr := doesUserExist(user.Name)
+		if userExistsErr != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Println(userExistsErr)
+			return
+		}
+		if userExists {
+			io.WriteString(w, "user already exists")
+			w.WriteHeader(http.StatusConflict)
+			return
+		}
+
+		// Create user in database
+		usersErr := addUser(user.Name, user.Password)
+		if usersErr != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Println(usersErr)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+}
+
+func usersParameterHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
 	case "GET":
 		log.Println("GET users")
 
-		// Check if http headers for username and password are set
-		if r.Header.Get("username") == "" || r.Header.Get("password") == "" {
-			w.WriteHeader(http.StatusBadRequest)
-			log.Println("Headers 'username' or 'password' not set")
-			return
-		}
-
-		// Check if user and password is correct
-		var username = r.Header.Get("username")
-		validUser, validUserErr := isUserValid(username, r.Header.Get("password"))
-		if validUserErr != nil {
+		// Check if user exists
+		var username = mux.Vars(r)["username"]
+		userExists, userExistsErr := doesUserExist(username)
+		if userExistsErr != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			log.Println(validUserErr)
+			log.Println(userExistsErr)
 			return
 		}
 
-		if validUser {
+		if userExists {
 			// Get user object
 			user, getUserErr := getUser(username)
 			if getUserErr != nil {
@@ -232,65 +284,33 @@ func usersHandler(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			w.Write(jsonResponse)
 		} else {
-			// user and/or password was not correct
-			w.WriteHeader(http.StatusForbidden)
+			// user does not exist - return 404
+			w.WriteHeader(http.StatusNotFound)
 		}
-
-	case "PUT":
-		log.Println("PUT users")
-
-		// Check if http headers for username and password are set
-		if r.Header.Get("username") == "" || r.Header.Get("password") == "" {
-			w.WriteHeader(http.StatusBadRequest)
-			log.Println("Headers 'username' or 'password' not set")
-			return
-		}
-
-		username := r.Header.Get("username")
-		password := r.Header.Get("password")
-
-		// Create user in database
-		usersErr := addUser(username, password)
-		if usersErr != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			log.Println(usersErr)
-			return
-		}
-
-		// Get newly created user object
-		user, getUserErr := getUser(username)
-		if getUserErr != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			log.Println(getUserErr)
-			return
-		}
-		user.Rank = 0
-		user.Sessions = make([]data.Session, 0)
-
-		// parse user object
-		jsonResponse, jsonErr := json.Marshal(user)
-		if jsonErr != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			log.Println(jsonErr)
-			return
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(jsonResponse)
 	case "DELETE":
 		log.Println("DELETE users")
 
-		// Check if http headers for username is set
-		if r.Header.Get("username") == "" {
-			w.WriteHeader(http.StatusBadRequest)
-			log.Println("Header 'username' is not set")
+		// Check if user exists
+		var username = mux.Vars(r)["username"]
+		userExists, userExistsErr := doesUserExist(username)
+		if userExistsErr != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Println(userExistsErr)
 			return
 		}
-		username := r.Header.Get("username")
 
-		// Delete user
-		deleteUserAndSessions(username)
-		w.WriteHeader(http.StatusOK)
+		if userExists {
+			deleteUserErr := deleteUserAndSessions(username)
+			if deleteUserErr != nil {
+				log.Println(deleteUserErr)
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+
+			w.WriteHeader(http.StatusOK)
+		} else {
+			// user does not exist - return 404
+			w.WriteHeader(http.StatusNotFound)
+		}
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
