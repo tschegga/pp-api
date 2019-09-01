@@ -31,55 +31,41 @@
 			"name": "/v1/users GET",
 			"request": {
 				"method": "GET",
-				"header": [
-					{
-						"key": "username",
-						"value": "Silvan",
-						"type": "text"
-					},
-					{
-						"key": "password",
-						"value": "7453679f023fec6d1236ea9aa8676aca",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:1337/v1/users",
+					"raw": "localhost:1337/v1/users/Silvan",
 					"host": [
 						"localhost"
 					],
 					"port": "1337",
 					"path": [
 						"v1",
-						"users"
+						"users",
+						"Silvan"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "/v1/users PUT",
+			"name": "/v1/users POST",
 			"request": {
-				"method": "PUT",
+				"method": "POST",
 				"header": [
 					{
-						"key": "username",
-						"value": "test",
-						"type": "text"
-					},
-					{
-						"key": "password",
-						"value": "7453679f023fec6d1236ea9aa8676aca",
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": ""
+					"raw": "{\n\t\"username\": \"Silvana\",\n\t\"password\": \"abc\"\n}"
 				},
 				"url": {
 					"raw": "localhost:1337/v1/users",
@@ -99,26 +85,21 @@
 			"name": "/v1/users DELETE",
 			"request": {
 				"method": "DELETE",
-				"header": [
-					{
-						"key": "username",
-						"value": "Silvan",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:1337/v1/users",
+					"raw": "localhost:1337/v1/users/Silvan",
 					"host": [
 						"localhost"
 					],
 					"port": "1337",
 					"path": [
 						"v1",
-						"users"
+						"users",
+						"Silvan"
 					]
 				}
 			},
