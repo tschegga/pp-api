@@ -8,8 +8,9 @@ CREATE TABLE users (
 
 CREATE TABLE sessions (
     sessions_id INT AUTO_INCREMENT,
+    athlete INT NOT NULL,
     start VARCHAR(255) NOT NULL,
-    end VARCHAR(255) NOT NULL,
+    length INT NOT NULL,
     quality INT NOT NULL,
     PRIMARY KEY (sessions_id)
 );
