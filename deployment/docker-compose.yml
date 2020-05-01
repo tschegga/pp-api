@@ -6,7 +6,7 @@ services:
       - MYSQL_DATABASE=pottpokal
       - MYSQL_ROOT_PASSWORD=root
     volumes:
-      - /db:/var/lib/mysql
+      - H:\GoCode\src\pp-api\database\.local:/var/lib/mysql
     ports:
       - "3306:3306"
   phpmyadmin:

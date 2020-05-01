@@ -1,4 +1,12 @@
+# IDEA
 .idea
-bin
-.bak
 .vscode
+
+# bin
+bin
+
+# MySQL workbench
+.bak
+
+# SQL local path
+.local
